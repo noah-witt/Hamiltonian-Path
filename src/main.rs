@@ -169,3 +169,14 @@ struct Point {
     x: i32,
     y: i32
 }*/
+
+
+#[test]
+fn it_works() {
+    thread::spawn(|| {
+       runMultithreadAuto();
+   });
+   let ten_second = time::Duration::from_millis(10000);
+   thread::sleep(ten_second);
+   println!("Passing");
+}
