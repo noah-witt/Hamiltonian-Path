@@ -5,3 +5,4 @@ authors = ["Noah Witt <noah@noah-witt.com>"]
 
 [dependencies]
 num_cpus = "0.2"
+hyper = "0.9"
