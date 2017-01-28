@@ -1,9 +1,3 @@
-#[macro_use]
-extern crate serde_derive;
-
-extern crate serde_json;
-extern crate toml;
-
 
 pub struct Config
 {
@@ -20,60 +14,11 @@ impl Clone for Config{
 }
 //impl Copy for Config{}
 
-#[derive(Serialize, Deserialize, Debug)]
-struct tomlConfig
-{
-    pub size: Option<i32>,
-    pub vector: Option<Vec<tomlVector>>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct tomlVector
-{
-    pub id:Option<char>,
-    pub x: Option<i32>,
-    pub y: Option<i32>,
-}
-
 impl Config
 {
     pub fn new() -> Config
     {
         return Config{size:0,movements:Vec::<Movement>::new()};
-    }
-    pub fn newFromToml() -> Config
-    {
-        let mut c=Config::new();
-        let toml = r#"
-        size = 3
-        [[vector]]
-        id = '0'
-        x =0
-        y=-1
-
-        [[vector]]
-        id = '1'
-        x =0
-        y=1
-
-        [[vector]]
-        id = '2'
-        x =1
-        y=0
-
-        [[vector]]
-        id = '3'
-        x =1
-        y=-1
-
-        [[vector]]
-        id = '4'
-        x =1
-        y=1
-        "#;
-        let data:tomlConfig = toml::decode_str(toml).unwrap();
-        println!("{}", data.size as i32);
-        return c;
     }
     pub fn setSize(&mut self,s :u8)
     {

@@ -26,19 +26,19 @@ fn main() {
     //startAtStage(String::from("22244460014460030344600144460003306414460030644500034235060054470250354216600250344600345270352"),Point::new(0,0));
     //runMultithreadAuto();
     //holdAwake();
-    Config::newFromToml();
     let c = configTest();
-    print!("{}",c.print());
+    print!("{}\n",c.print());
 
     runMultithreadAuto(c);
     holdAwake();
 
 }
 
+#[allow(non_snake_case)]
 fn configTest() -> Config
 {
     let mut config = Config::new();
-    config.setSize(3);
+    config.setSize(4);
     config.insertMovement(Movement::new('0',0,-1));
     config.insertMovement(Movement::new('1',0,1));
     config.insertMovement(Movement::new('2',1,0));
@@ -69,9 +69,9 @@ fn runMultithread(num:u8, config:Config)
 {
     let mut i=0;
     let mut threads = vec![];
-    while i<num&&i<config.movements.len() as u8
+    while i<num&&i<config.size
     {
-        threads.push(spawnThread(i,Point::new(0,0),config.clone()));
+        threads.push(spawnThread(i,config.clone()));
         i+=1;
     }
 }
@@ -79,10 +79,10 @@ fn runMultithread(num:u8, config:Config)
 #[allow(non_snake_case)]
 //passed 0 through 7 inclusive. representing the starting direction
 
-fn spawnThread(direction:u8,start:Point,config:Config) -> JoinHandle<()>
+fn spawnThread(start:u8,config:Config) -> JoinHandle<()>
 {
     let handle = thread::spawn(move || {
-       looper(direction,start,config);
+       looper(start,config);
    });
    return handle;
 }
@@ -105,31 +105,49 @@ fn looper(d:u8, start:Point, config:Config)
     }
 }
 
-
 #[allow(non_snake_case)]
-fn startDirection(d:u8,start:Point,config:Config) ->bool
+fn runMultithreadTile(num:u8, config:Config)
 {
-    let mut p = start.clone();
-    let mut g = Grid::new(config.clone());
-    g.land(start);
-    //println!("l:{}", length);
-    p.shift(config.movements[d as usize].X,config.movements[d as usize].Y);
-    if g.attempt(p)
+    let mut i=0;
+    let mut threads = vec![];
+    while i<num&&i<config.size
     {
-        let moves = format!("{}",config.movements[d as usize].id);
-        rec(start,p,moves,1,g,config);
-        return true;
+        threads.push(spawnThreadTile(i,config.clone()));
+        i+=1;
     }
-    return false;
 }
 
 #[allow(non_snake_case)]
-fn rec(start:Point,c:Point,path:String,depth:u8,table:Grid,config:Config)
+fn spawnThreadTile(id:u8,config:Config) -> JoinHandle<()>
+{
+    let mut start = Point::new(0,0);
+    start.setX(id%config.size);
+    start.setY(config.size/id);
+    println!("{:?}", );
+    let handle = thread::spawn(move || {
+       startAtTile(start,config);
+   });
+   return handle;
+}
+
+#[allow(non_snake_case)]
+fn startAtTile(start:Point,config:Config) ->bool
+{
+    let mut g = Grid::new(config.clone());
+    g.land(start);
+    let moves = String::from("");
+    rec(start.copy(),start.copy(),moves,1,g,config);
+    return true;
+}
+
+#[allow(non_snake_case)]
+fn rec(start:Point,c:Point,path:String,depth:u8,table:Grid,config:Config) -> bool
 {
     //squelch for new path found. make sure squelch is only run when greater than 0 or undocumented bahavior may arise
     if depth>(config.size*config.size)-2
     {
         println!("reached Depth:{} \n using path:{} \n starting at:{}",depth, path,start.toString());
+        return true;
     }
     let mut newC = c.clone();
     let mut newT = table.clone();
@@ -138,11 +156,12 @@ fn rec(start:Point,c:Point,path:String,depth:u8,table:Grid,config:Config)
         newC.moveToVector(config.movements[e as usize]);
         if newT.attempt(newC)
         {
-            rec(start,newC,format!("{}{}",path,e),depth+1,newT,config.clone())
+            rec(start,newC,format!("{}{}",path,e),depth+1,newT,config.clone());
         }
         newC = c.clone();
         newT = table.clone();
     }
+    return false;
 }
 
 
