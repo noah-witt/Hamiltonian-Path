@@ -1,12 +1,14 @@
 use point::Point;
+use config::Config;
 pub struct Grid
 {
-    grid: [[bool; 10]; 10]
+    grid: [[bool; 100]; 100],
+    s: i32
 }
 impl Clone for Grid{
     fn clone(&self) -> Grid
     {
-        let mut g = Grid::new();
+        let mut g = Grid::newl(self.s);
         for x in 0..10
         {
             for y in 0..10
@@ -21,7 +23,7 @@ impl Copy for Grid{}
 impl Grid
 {
     #[allow(unused_mut)]
-    pub fn new() -> Grid
+    pub fn new(c:Config) -> Grid
     {
         /*let mut obj:Grid = Grid {
             grid: {
@@ -31,7 +33,20 @@ impl Grid
                 {false,false,false,false}
             }
         };*/
-        let mut obj:Grid = Grid {grid:[[false; 10];10]};
+        let mut obj:Grid = Grid {grid:[[false; 100];100],s:c.size as i32};
+        return obj;
+    }
+    fn newl(sL:i32) -> Grid
+    {
+        /*let mut obj:Grid = Grid {
+            grid: {
+                {false,false,false,false},
+                {false,false,false,false},
+                {false,false,false,false},
+                {false,false,false,false}
+            }
+        };*/
+        let mut obj:Grid = Grid {grid:[[false; 100];100],s:sL};
         return obj;
     }
     //set to specific value
@@ -61,7 +76,7 @@ impl Grid
     //returns true if the corrdinate is invalid
     pub fn invalidC(&self,c:Point) -> bool
     {
-        return !(0<=c.getX()&&10>c.getX()&&0<=c.getY()&&10>c.getY());
+        return !(0<=c.getX()&&self.s>c.getX()&&0<=c.getY()&&self.s>c.getY());
     }
     pub fn land(&mut self,c:Point)
     {

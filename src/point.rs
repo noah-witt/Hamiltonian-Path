@@ -1,3 +1,5 @@
+use config::Movement;
+
 pub struct Point {
     x: i32,
     y: i32
@@ -54,41 +56,17 @@ impl Point {
     }
     #[allow(non_snake_case)]
     #[allow(dead_code)]
-    pub fn moveToVector(&mut self,d:u8)
+    pub fn shift(&mut self,chX:i32, chY:i32) -> (i32,i32)
     {
-        match d {
-            0 => {
-                self.changeY(-3);
-            },
-            1 => {
-                self.changeY(-2);
-                self.changeX(2);
-            },
-            2 => {
-                self.changeX(3);
-            },
-            3 => {
-                self.changeY(2);
-                self.changeX(2);
-            },
-            4 => {
-                self.changeY(3);
-            },
-            5 => {
-                self.changeY(2);
-                self.changeX(-2);
-            },
-            6 => {
-                self.changeX(-3);
-            },
-            7 => {
-                self.changeY(-2);
-                self.changeX(-2);
-            },
-            _=> {
-                panic!("invalid vector");
-            }
-        }
+        self.x+=chX;
+        self.y+=chY;
+        return (self.x,self.y);
+    }
+    #[allow(non_snake_case)]
+    #[allow(dead_code)]
+    pub fn moveToVector(&mut self,m:Movement)
+    {
+        self.shift(m.X,m.Y);
     }
 
     #[allow(non_snake_case)]

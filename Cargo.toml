@@ -6,3 +6,5 @@ authors = ["Noah Witt <noah@noah-witt.com>"]
 [dependencies]
 num_cpus = "0.2"
 curl = "0.4.2"
+serde_derive = "*"
+toml = { version = "0.2", features = ["serde"] }
