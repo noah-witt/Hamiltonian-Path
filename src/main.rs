@@ -7,6 +7,7 @@ extern crate num_cpus;
 use grid::Grid;
 mod point;
 mod grid;
+use std::fs::OpenOptions;
 
 fn main() {
     /*
@@ -150,6 +151,13 @@ fn rec(start:Point,c:Point,path:String,depth:u8,table:Grid)
     if depth>98
     {
         println!("reached Depth:{} \n using path:{} \n starting at:{}",depth, path,start.toString());
+        let mut file = OpenOptions::new();
+        file.read(true);
+        file.write(true).create(true).open("results.csv");
+        file.create(true);
+        file.append(true);
+        file.open("results.csv");
+        writeln!(file, format!("{},{},{}\n",start.getX(),start.getY(),path))
     }
     let mut newC = c.clone();
     let mut newT = table.clone();
