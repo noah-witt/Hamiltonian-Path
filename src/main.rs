@@ -7,7 +7,8 @@ extern crate num_cpus;
 use grid::Grid;
 mod point;
 mod grid;
-use std::fs::OpenOptions;
+use std::fs::File;
+use std::io::Read;
 
 fn main() {
     /*
@@ -157,7 +158,8 @@ fn rec(start:Point,c:Point,path:String,depth:u8,table:Grid)
         file.create(true);
         file.append(true);
         file.open("results.csv");
-        writeln!(file, format!("{},{},{}\n",start.getX(),start.getY(),path))
+        file.write(format!("{},{},{}\n",start.getX(),start.getY(),path).as_bytes())
+        writeln!(file,"{}", format!("{},{},{}\n",start.getX(),start.getY(),path))
     }
     let mut newC = c.clone();
     let mut newT = table.clone();
