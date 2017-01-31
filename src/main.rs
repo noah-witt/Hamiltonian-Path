@@ -1,14 +1,12 @@
 use std::thread;
 use std::time;
-use std::thread::Thread;
+//use std::thread::Thread;
 use std::thread::JoinHandle;
 use point::Point;
 extern crate num_cpus;
 use grid::Grid;
 mod point;
 mod grid;
-use std::fs::File;
-use std::io::Read;
 
 fn main() {
     /*
@@ -18,9 +16,16 @@ fn main() {
     startAtStage("",Point::new(0,0));*/
     //println!("{}",num_cpus::get());
     //startAtStage(String::from("22244460014460030344600144460003306414460030644500034235060054470250354216600250344600345270352"),Point::new(0,0));
+    printHeader();
     runMultithreadAuto();
     holdAwake();
 
+}
+
+#[allow(non_snake_case)]
+fn printHeader()
+{
+    println!("x,y,path");
 }
 
 #[allow(non_snake_case)]
@@ -37,7 +42,8 @@ fn holdAwake()
 #[allow(non_snake_case)]
 fn runMultithreadAuto()
 {
-    runMultithread(num_cpus::get() as u8);
+    //runMultithread(num_cpus::get() as u8);
+    runMultithread(8);
 }
 
 #[allow(non_snake_case)]
@@ -145,21 +151,14 @@ fn startAtStage(moves:String,start:Point) ->bool
     return true;
 }
 
+
 #[allow(non_snake_case)]
 fn rec(start:Point,c:Point,path:String,depth:u8,table:Grid)
 {
     //squelch for new path found. make sure squelch is only run when greater than 0 or undocumented bahavior may arise
     if depth>98
     {
-        println!("reached Depth:{} \n using path:{} \n starting at:{}",depth, path,start.toString());
-        let mut file = OpenOptions::new();
-        file.read(true);
-        file.write(true).create(true).open("results.csv");
-        file.create(true);
-        file.append(true);
-        file.open("results.csv");
-        file.write(format!("{},{},{}\n",start.getX(),start.getY(),path).as_bytes())
-        writeln!(file,"{}", format!("{},{},{}\n",start.getX(),start.getY(),path))
+        println!("{},{},{}",start.getX(),start.getY(), path);
     }
     let mut newC = c.clone();
     let mut newT = table.clone();
