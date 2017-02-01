@@ -7,6 +7,7 @@ extern crate num_cpus;
 use grid::Grid;
 mod point;
 mod grid;
+use std::env;
 
 fn main() {
     /*
@@ -51,9 +52,40 @@ fn runMultithread(num:u8)
 {
     let mut i=0;
     let mut threads = vec![];
+    let mut argNum =0;
+    let mut x:i32=0;
+    let mut y:i32=0;
+    for argument in env::args()
+    {
+        //println!("arg:{}",argument);
+        if argNum==1
+        {
+            match argument.parse::<i32>() {
+                Ok(n) => x=n,
+                Err(e) => x=0,
+            }
+        }
+        else if argNum==2
+        {
+            match argument.parse::<i32>() {
+                Ok(n) => y=n,
+                Err(e) => y=0,
+            }
+        }
+        argNum=argNum+1;
+    }
+    //test
+    //println!("{},{}",x,y);
     while i<num&&i<8
     {
-        threads.push(spawnThread(i,Point::new(0,0)));
+        if argNum==3
+        {
+            threads.push(spawnThread(i,Point::new(x,y)));
+        }
+        else
+        {
+            threads.push(spawnThread(i,Point::new(0,0)));
+        }
         i+=1;
     }
 }
